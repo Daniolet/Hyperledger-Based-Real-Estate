@@ -1,3 +1,75 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.glass-button {
+  display: inline-block;
+  padding: 14px 22px;
+  border: 0;
+  text-decoration: none;
+  border-radius: 15px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(30px);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.glass-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* .glass-button {
+  margin: 15px;
+  margin-top: 40px;
+} */
+
+.swtch {
+  position: relative;
+  display: block;
+  background: #ebebeb;
+  border-radius: 200px;
+  box-shadow: inset 0px 5px 15px rgba(0, 0, 0, 0.4),
+    inset 0px -5px 15px rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+}
+
+.swtch:after {
+  content: "";
+  width: 19px;
+  height: 19px;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  background: linear-gradient(180deg, #ffcc89, #d8860b);
+  border-radius: 180px;
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+input:checked + .swtch {
+  background: #242424;
+}
+
+input:checked + .swtch:after {
+  left: 60px;
+  transform: translateX(-100%);
+  background: linear-gradient(180deg, #777, #3a3a3a);
+}
+.swtch,
+.swtch:after {
+  transition: 0.3s;
+}
+.swtch:active:after {
+  width: 70px;
+}
+
+.main {
+  filter: invert(100%);
+}
+
+.avoiddark {
+  filter: invert(100%);
+}

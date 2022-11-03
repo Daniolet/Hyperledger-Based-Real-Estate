@@ -36,7 +36,7 @@ const Home: NextPage = () => {
               <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                 Sign in to your account
               </h1>
-              <form className="space-y-4 md:space-y-6" action="#">
+              <div className="space-y-4 md:space-y-6" >
                 <div className="flex justify-center w-full">
                   <div className='w-full'>
                     <div className="dropdown relative w-full">
@@ -105,7 +105,7 @@ const Home: NextPage = () => {
                   </div>
                   {/* <a href="#" className="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500">Forgot password?</a> */}
                 </div>
-                <button type="submit" className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800" onClick={() => {
+                <button className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800" onClick={() => {
                   if (value != null) {
                     localStorage.setItem("account", JSON.stringify(accnt))
                     router.push("/realestate")
@@ -115,7 +115,7 @@ const Home: NextPage = () => {
                 <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                   Don’t have an account yet? <a href="mailto:dimebeatengreen8@gmail.com" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Contact Administrator or MSP</a>
                 </p>
-              </form>
+              </div>
             </div>
           </div>
         </div>
