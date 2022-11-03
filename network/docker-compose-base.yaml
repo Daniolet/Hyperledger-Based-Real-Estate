@@ -1,0 +1,19 @@
+version: "2.1"
+
+services:
+  peer-base: # PEER's public service
+    image: hyperledger/fabric-peer:1.4.12
+    environment:
+      - GODEBUG=netdns=go
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_LOGGING_PEER=info
+      - CORE_CHAINCODE_LOGGING_LEVEL=INFO
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/peer/msp # MSP certificate (node certificate)
+      - CORE_LEDGER_STATE_STATEDATABASE=goleveldb # Status database storage engine (OR CouchDB）
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_network # docker 网络
+    volumes:
+      - /var/run/docker.sock:/host/var/run/docker.sock
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: peer node start
+    networks:
+      - fabric_network

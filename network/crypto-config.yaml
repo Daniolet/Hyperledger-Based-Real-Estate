@@ -1,0 +1,24 @@
+# Organization definition of sorting nodes
+OrdererOrgs:
+  - Name: QQ # name
+    Domain: qq.com # domain name
+    Specs: # Node domain name：orderer.qq.com
+      - Hostname: orderer # CPU name
+
+# Organization definition of peer node
+PeerOrgs:
+  # Taobao-organize
+  - Name: Taobao # name
+    Domain: taobao.com # domain name
+    Template: # Use template definition.Count refers to the number of tissue nodes under the organization
+      Count: 2 # Node domain name: peer0.taobao.com and peer1.taobao.com
+    Users: # Organize user information.Count refers to the number of users in the organization except Admin
+      Count: 1 # User: admin and user1
+
+  # JD-organize
+  - Name: JD
+    Domain: jd.com
+    Template:
+      Count: 2 # Node domain name: peer0.jd.com and peer1.jd.com
+    Users:
+      Count: 1 # User: admin and user1

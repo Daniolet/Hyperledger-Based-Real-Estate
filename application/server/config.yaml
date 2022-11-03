@@ -1,0 +1,93 @@
+version: 1.0.0
+
+# GO SDK's client part.
+client:
+  # The organization that belongs to the client must be the organization defined by Organizations
+  organization: JD
+  # Diary level
+  logging:
+    level: info
+  # The root path of the MSP certificate
+  cryptoconfig:
+    path: /network/crypto-config
+
+# Channel definition
+channels:
+  appchannel:
+    orderers:
+      - orderer.qq.com
+    peers:
+      peer0.jd.com:
+        endorsingPeer: true
+        chaincodeQuery: true
+        ledgerQuery: true
+        eventSource: true
+      peer1.jd.com:
+        endorsingPeer: true
+        chaincodeQuery: true
+        ledgerQuery: true
+        eventSource: true
+
+# Organizational configuration
+organizations:
+  JD:
+    mspid: "JDMSP"
+    cryptoPath: peerOrganizations/jd.com/users/{username}@jd.com/msp
+    peers:
+      - peer0.jd.com
+      - peer1.jd.com
+
+# Orderer node list
+orderers:
+  orderer.qq.com:
+    url: orderer.qq.com:7050
+    # Pass to the GRPC client constructor
+    grpcOptions:
+      ssl-target-name-override: orderer.qq.com
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      allow-insecure: true
+
+# PEERS Node List
+peers:
+  # PEER node definition, can define multiple multiple
+  peer0.jd.com:
+    # URL is used to send endorsements and query requests
+    url: peer0.jd.com:7051
+    # Pass to the GRPC client constructor
+    grpcOptions:
+      ssl-target-name-override: peer0.jd.com
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      allow-insecure: true
+  peer1.jd.com:
+    url: peer1.jd.com:7051
+    grpcOptions:
+      ssl-target-name-override: peer1.jd.com
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      allow-insecure: true
+  peer0.taobao.com:
+    url: peer0.taobao.com:7051
+    grpcOptions:
+      ssl-target-name-override: peer0.taobao.com
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      allow-insecure: true
+  peer1.taobao.com:
+    url: peer1.taobao.com:7051
+    grpcOptions:
+      ssl-target-name-override: peer1.taobao.com
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      allow-insecure: true

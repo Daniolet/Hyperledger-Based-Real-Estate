@@ -1,0 +1,65 @@
+# Define the organizational entity
+Organizations:
+  - &QQ
+    Name: QQ # Organic name
+    ID: QQMSP # organizational MSPID
+    MSPDir: crypto-config/ordererOrganizations/qq.com/msp #Organizational certificate relative position (generated Crypto-config directory)
+
+  - &Taobao
+    Name: Taobao
+    ID: TaobaoMSP
+    MSPDir: crypto-config/peerOrganizations/taobao.com/msp
+    AnchorPeers: # Organization anchor node configuration
+      - Host: peer0.taobao.com
+        Port: 7051
+
+  - &JD
+    Name: JD
+    ID: JDMSP
+    MSPDir: crypto-config/peerOrganizations/jd.com/msp
+    AnchorPeers: # Organization anchor node configuration
+      - Host: peer0.jd.com
+        Port: 7051
+
+# Definition of related parameters of sorting services, these parameters will be used to create a creation block
+Orderer:
+  &OrdererDefaults # Sorting node types are used to specify the implementation of sorting nodes to be enabled, and different implementation of different consensus algorithms
+  OrdererType: solo # Consensus mechanism
+  Addresses: # Orderer The domain name (for connection)
+    - orderer.qq.com:7050
+  BatchTimeout: 2s # Partial interval
+  BatchSize: # The amount of information used to control each block
+    MaxMessageCount: 10 #Number of messages of each block
+    AbsoluteMaxBytes: 99 MB #The largest information of each block
+    PreferredMaxBytes: 512 KB #The maximum length of the information contained in each block
+  Organizations:
+
+# Define how the PEER organization interacts with the application channel
+# Default strategy: All Peer organizations will be able to read data and write the data into the ledger
+Application: &ApplicationDefaults
+  Organizations:
+
+# Used to define the configuration entrance for the Configtxgen tool
+# Specify the PROFILE parameter (TwoorGSORDERERGNESIS or TwoorGSChannel) as a parameter of the Configtxgen tool
+Profiles:
+  # TwoorGSORDERGNSIS Configuration File is used to create a system channel creation
+  # This configuration file creates a alliance called Sampleconsortium
+  # The alliance contains two Peer taobao and JD in the configtx.yaml file
+  TwoOrgsOrdererGenesis:
+    Orderer:
+      <<: *OrdererDefaults
+      Organizations:
+        - *QQ
+    Consortiums:
+      SampleConsortium:
+        Organizations:
+          - *Taobao
+          - *JD
+  # Use TwoorGSChannel to configure files to create application channels
+  TwoOrgsChannel:
+    Consortium: SampleConsortium
+    Application:
+      <<: *ApplicationDefaults
+      Organizations:
+        - *Taobao
+        - *JD
