@@ -13,7 +13,7 @@ const Realestate = () => {
     const [check, setcheck] = useState<boolean>(true)
     const [error, seterror] = useState<string>("Couldnt not save")
     const [property, setproperty] = useState<string>("")
-    const [order, setorder] = useState<"sell" | "buy" | null>(null)
+    const [order, setorder] = useState<"sell" | "donate" | null>(null)
     const [overall, setoverall] = useState<number>(0)
     const [living, setliving] = useState<number>(0)
     const [price, setprice] = useState<number>(0)
@@ -54,6 +54,51 @@ const Realestate = () => {
         console.log(RealEstate, "try");
     }
 
+    const SellProperty = () => {
+        toast.promise(
+            fetch("http://localhost:8000/api/v1/createSelling", {
+                method: "post",
+                body: JSON.stringify({
+                    objectOfSale: property,
+                    "price": price,
+                    "salePeriod": validity,
+                    "seller": acc?.accountId
+                })
+            }).then((res) => res.json().then((resp) => {
+                console.log(resp)
+                QueryRealEstate()
+                setmodel3(!model3)
+            }).catch((err) => seterror(JSON.stringify(err)))),
+            {
+                loading: 'Saving...',
+                success: <b>Settings saved!</b>,
+                error: <b>{error}</b>,
+            }
+        )
+    }
+
+    const donateproperty = () => {
+        toast.promise(
+            fetch("http://localhost:8000/api/v1/createDonating", {
+                method: "post",
+                body: JSON.stringify({
+                    ObjectOfDonating: property,
+                    Grantee: ordacc?.accountId,
+                    Donor: acc?.accountId
+                })
+            }).then((res) => res.json().then((resp) => {
+                console.log(resp)
+                QueryRealEstate()
+                setmodel3(!model3)
+            }).catch((err) => seterror(JSON.stringify(err)))),
+            {
+                loading: 'Saving...',
+                success: <b>Settings saved!</b>,
+                error: <b>{error}</b>,
+            }
+        )
+    }
+
     const CreateAsset = () => {
         console.log(accnt, living, overall);
         toast.promise(
@@ -92,8 +137,8 @@ const Realestate = () => {
 
             <div className="navbar sticky top-0 z-50 text-white flex justify-between px-10 items-center w-full dark:bg-gray-700 dark:border-gray-700 dark:text-white py-4">
                 <div className="flex space-x-6">
-                    <button className="glass-button" onClick={() => logger()}>Sellings</button>
-                    <button className="glass-button">Donations</button>
+                    <button className="glass-button" onClick={() => router.push("/selling")}>Sellings</button>
+                    <button className="glass-button" onClick={() => router.push("/donation")}>Donations</button>
                 </div>
                 <div className="font-semibold text-xl">
                     Block Chain Based Real Estate
@@ -155,7 +200,7 @@ const Realestate = () => {
                                                                         setproperty(ele.realEstateId)
                                                                     }}>Sell</div>
                                                                     <div className="bg-blue-600 cursor-pointer px-7 py-3 rounded-xl" onClick={() => {
-                                                                        setorder("buy")
+                                                                        setorder("donate")
                                                                         setmodel3(!model3)
                                                                         setproperty(ele.realEstateId)
                                                                     }}>Donate</div>
@@ -437,12 +482,18 @@ const Realestate = () => {
 
                         </div>
                         <div className="bg-gray-200 px-4 py-3 w-full flex justify-between">
-                            <button type="button" className="py-2 px-4 bg-green-500 text-white rounded hover:bg-gray-700 mr-2"><i className="fas fa-times"></i>{order == "sell" ? "sell" : "donate"}</button>
+                            <button type="button"
+                                onClick={() => order == "sell" ? SellProperty() : donateproperty()}
+                                className="py-2 px-4 bg-green-500 text-white rounded hover:bg-gray-700 mr-2"><i className="fas fa-times"></i>{order == "sell" ? "sell" : "donate"}</button>
                             <button type="button" className="py-2 px-4 bg-gray-500 text-white rounded hover:bg-gray-700 mr-2" onClick={() => setmodel3(!model3)} ><i className="fas fa-times"></i> Cancel</button>
                         </div>
                     </div>
                 </div>
             </div>
+            <Toaster
+                position="bottom-left"
+                reverseOrder={false}
+            />
         </div >
     )
 }

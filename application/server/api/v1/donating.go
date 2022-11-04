@@ -40,14 +40,20 @@ func CreateDonating(c *gin.Context) {
 		appG.Response(http.StatusBadRequest, "fail", fmt.Sprintf("Parameter error%s", err.Error()))
 		return
 	}
-	if body.ObjectOfDonating == "" || body.Donor == "" || body.Grantee == "" {
+	NrawBody, _ := c.GetRawData()
+	s := string(NrawBody)
+	newdata := DonatingRequestBody{}
+	json.Unmarshal([]byte(s), &newdata)
+	fmt.Println(newdata, body)
+
+	if newdata.ObjectOfDonating == "" || newdata.Donor == "" || newdata.Grantee == "" {
 		appG.Response(http.StatusBadRequest, "fail", "Objectofdonating donation objects and Donor donors and Grantee gifts cannot be empty")
 		return
 	}
 	var bodyBytes [][]byte
-	bodyBytes = append(bodyBytes, []byte(body.ObjectOfDonating))
-	bodyBytes = append(bodyBytes, []byte(body.Donor))
-	bodyBytes = append(bodyBytes, []byte(body.Grantee))
+	bodyBytes = append(bodyBytes, []byte(newdata.ObjectOfDonating))
+	bodyBytes = append(bodyBytes, []byte(newdata.Donor))
+	bodyBytes = append(bodyBytes, []byte(newdata.Grantee))
 	//Call smart contract
 	resp, err := bc.ChannelExecute("createDonating", bodyBytes)
 	if err != nil {
@@ -126,15 +132,19 @@ func UpdateDonating(c *gin.Context) {
 		appG.Response(http.StatusBadRequest, "fail", fmt.Sprintf("Parameter error%s", err.Error()))
 		return
 	}
-	if body.ObjectOfDonating == "" || body.Donor == "" || body.Grantee == "" || body.Status == "" {
+	NrawBody, _ := c.GetRawData()
+	s := string(NrawBody)
+	newdata := UpdateDonatingRequestBody{}
+	json.Unmarshal([]byte(s), &newdata)
+	if newdata.ObjectOfDonating == "" || newdata.Donor == "" || newdata.Grantee == "" || newdata.Status == "" {
 		appG.Response(http.StatusBadRequest, "fail", "Parameters cannot be empty")
 		return
 	}
 	var bodyBytes [][]byte
-	bodyBytes = append(bodyBytes, []byte(body.ObjectOfDonating))
-	bodyBytes = append(bodyBytes, []byte(body.Donor))
-	bodyBytes = append(bodyBytes, []byte(body.Grantee))
-	bodyBytes = append(bodyBytes, []byte(body.Status))
+	bodyBytes = append(bodyBytes, []byte(newdata.ObjectOfDonating))
+	bodyBytes = append(bodyBytes, []byte(newdata.Donor))
+	bodyBytes = append(bodyBytes, []byte(newdata.Grantee))
+	bodyBytes = append(bodyBytes, []byte(newdata.Status))
 	//Call smart contract
 	resp, err := bc.ChannelExecute("updateDonating", bodyBytes)
 	if err != nil {

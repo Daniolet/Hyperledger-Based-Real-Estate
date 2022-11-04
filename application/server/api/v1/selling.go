@@ -48,19 +48,24 @@ func CreateSelling(c *gin.Context) {
 		appG.Response(http.StatusBadRequest, "fail", fmt.Sprintf("Parameter error%s", err.Error()))
 		return
 	}
-	if body.ObjectOfSale == "" || body.Seller == "" {
+	NrawBody, _ := c.GetRawData()
+	s := string(NrawBody)
+	newdata := SellingRequestBody{}
+	json.Unmarshal([]byte(s), &newdata)
+	fmt.Println(newdata, body)
+	if newdata.ObjectOfSale == "" || newdata.Seller == "" {
 		appG.Response(http.StatusBadRequest, "fail", "Objectofsale sales target and Seller initiated seller cannot be empty")
 		return
 	}
-	if body.Price <= 0 || body.SalePeriod <= 0 {
+	if newdata.Price <= 0 || newdata.SalePeriod <= 0 {
 		appG.Response(http.StatusBadRequest, "fail", "The validity period of Price price and saleperiod smart contract(The unit is the sky)Must be greater than 0")
 		return
 	}
 	var bodyBytes [][]byte
-	bodyBytes = append(bodyBytes, []byte(body.ObjectOfSale))
-	bodyBytes = append(bodyBytes, []byte(body.Seller))
-	bodyBytes = append(bodyBytes, []byte(strconv.FormatFloat(body.Price, 'E', -1, 64)))
-	bodyBytes = append(bodyBytes, []byte(strconv.Itoa(body.SalePeriod)))
+	bodyBytes = append(bodyBytes, []byte(newdata.ObjectOfSale))
+	bodyBytes = append(bodyBytes, []byte(newdata.Seller))
+	bodyBytes = append(bodyBytes, []byte(strconv.FormatFloat(newdata.Price, 'E', -1, 64)))
+	bodyBytes = append(bodyBytes, []byte(strconv.Itoa(newdata.SalePeriod)))
 	//Call smart contract
 	resp, err := bc.ChannelExecute("createSelling", bodyBytes)
 	if err != nil {
@@ -83,14 +88,18 @@ func CreateSellingByBuy(c *gin.Context) {
 		appG.Response(http.StatusBadRequest, "fail", fmt.Sprintf("Parameter error%s", err.Error()))
 		return
 	}
-	if body.ObjectOfSale == "" || body.Seller == "" || body.Buyer == "" {
+	NrawBody, _ := c.GetRawData()
+	s := string(NrawBody)
+	newdata := SellingByBuyRequestBody{}
+	json.Unmarshal([]byte(s), &newdata)
+	if newdata.ObjectOfSale == "" || newdata.Seller == "" || newdata.Buyer == "" {
 		appG.Response(http.StatusBadRequest, "fail", "Parameters cannot be empty")
 		return
 	}
 	var bodyBytes [][]byte
-	bodyBytes = append(bodyBytes, []byte(body.ObjectOfSale))
-	bodyBytes = append(bodyBytes, []byte(body.Seller))
-	bodyBytes = append(bodyBytes, []byte(body.Buyer))
+	bodyBytes = append(bodyBytes, []byte(newdata.ObjectOfSale))
+	bodyBytes = append(bodyBytes, []byte(newdata.Seller))
+	bodyBytes = append(bodyBytes, []byte(newdata.Buyer))
 	//Call smart contract
 	resp, err := bc.ChannelExecute("createSellingByBuy", bodyBytes)
 	if err != nil {
@@ -169,15 +178,19 @@ func UpdateSelling(c *gin.Context) {
 		appG.Response(http.StatusBadRequest, "fail", fmt.Sprintf("Parameter error%s", err.Error()))
 		return
 	}
-	if body.ObjectOfSale == "" || body.Seller == "" || body.Status == "" {
+	NrawBody, _ := c.GetRawData()
+	s := string(NrawBody)
+	newdata := UpdateSellingRequestBody{}
+	json.Unmarshal([]byte(s), &newdata)
+	if newdata.ObjectOfSale == "" || newdata.Seller == "" || newdata.Status == "" {
 		appG.Response(http.StatusBadRequest, "fail", "Parameters cannot be empty")
 		return
 	}
 	var bodyBytes [][]byte
-	bodyBytes = append(bodyBytes, []byte(body.ObjectOfSale))
-	bodyBytes = append(bodyBytes, []byte(body.Seller))
-	bodyBytes = append(bodyBytes, []byte(body.Buyer))
-	bodyBytes = append(bodyBytes, []byte(body.Status))
+	bodyBytes = append(bodyBytes, []byte(newdata.ObjectOfSale))
+	bodyBytes = append(bodyBytes, []byte(newdata.Seller))
+	bodyBytes = append(bodyBytes, []byte(newdata.Buyer))
+	bodyBytes = append(bodyBytes, []byte(newdata.Status))
 	//Call smart contract
 	resp, err := bc.ChannelExecute("updateSelling", bodyBytes)
 	if err != nil {
