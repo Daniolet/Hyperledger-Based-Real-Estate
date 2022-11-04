@@ -28,26 +28,37 @@ func CreateRealEstate(c *gin.Context) {
 	body := new(RealEstateRequestBody)
 	//Analyze the body parameter
 	if err := c.ShouldBind(body); err != nil {
+		fmt.Println(body)
 		appG.Response(http.StatusBadRequest, "fail", fmt.Sprintf("parameterError%s", err.Error()))
 		return
 	}
-	if body.TotalArea <= 0 || body.LivingSpace <= 0 || body.LivingSpace > body.TotalArea {
-		appG.Response(http.StatusBadRequest, "fail", "The total area of Total Area and Living Space must be greater than 0, and the living space is less than equal to the total area")
+	NrawBody, _ := c.GetRawData()
+	s := string(NrawBody)
+	newdata := RealEstateRequestBody{}
+	json.Unmarshal([]byte(s), &newdata)
+
+	fmt.Println("second", (newdata))
+
+	if newdata.TotalArea <= 0 || newdata.LivingSpace <= 0 || newdata.LivingSpace > newdata.TotalArea {
+		fmt.Print(newdata)
+		appG.Response(http.StatusBadRequest, "fail", "The total area of Total Area and Living Space must be greater than 0, and the living space is less than equal to the total"+string(newdata.AccountId))
 		return
 	}
 	var bodyBytes [][]byte
-	bodyBytes = append(bodyBytes, []byte(body.AccountId))
-	bodyBytes = append(bodyBytes, []byte(body.Proprietor))
-	bodyBytes = append(bodyBytes, []byte(strconv.FormatFloat(body.TotalArea, 'E', -1, 64)))
-	bodyBytes = append(bodyBytes, []byte(strconv.FormatFloat(body.LivingSpace, 'E', -1, 64)))
+	bodyBytes = append(bodyBytes, []byte(newdata.AccountId))
+	bodyBytes = append(bodyBytes, []byte(newdata.Proprietor))
+	bodyBytes = append(bodyBytes, []byte(strconv.FormatFloat(newdata.TotalArea, 'E', -1, 64)))
+	bodyBytes = append(bodyBytes, []byte(strconv.FormatFloat(newdata.LivingSpace, 'E', -1, 64)))
 	//Call smart contract
 	resp, err := bc.ChannelExecute("createRealEstate", bodyBytes)
 	if err != nil {
+		fmt.Print("are we here")
 		appG.Response(http.StatusInternalServerError, "fail", err.Error())
 		return
 	}
 	var data map[string]interface{}
 	if err = json.Unmarshal(bytes.NewBuffer(resp.Payload).Bytes(), &data); err != nil {
+		fmt.Print("are we here 2")
 		appG.Response(http.StatusInternalServerError, "fail", err.Error())
 		return
 	}
