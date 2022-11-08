@@ -5,16 +5,16 @@ WORKDIR /root/togettoyou
 COPY server/. .
 RUN CGO_ENABLED=0 go build -v -o "app" .
 
-FROM node:16 AS web
-WORKDIR /root/togettoyou
-COPY web/package*.json ./
-RUN yarn config set registry https://registry.npmmirror.com/ && yarn install --ignore-engines
-COPY web/. .
-RUN npm run build:prod 
+# FROM node:16 AS web
+# WORKDIR /root/togettoyou
+# COPY web/package*.json ./
+# RUN yarn config set registry https://registry.npmmirror.com/ && yarn install --ignore-engines
+# COPY web/. .
+# RUN npm run build:prod 
 
 FROM scratch
 WORKDIR /root/togettoyou/
 COPY --from=app /root/togettoyou/app ./
 COPY --from=app /root/togettoyou/config.yaml ./
-COPY --from=web /root/togettoyou/dist/ ./dist/
+# COPY --from=web /root/togettoyou/dist/ ./dist/
 ENTRYPOINT ["./app"]
